@@ -1,0 +1,19 @@
+{
+  "name": "apitechu",
+  "version": "1.0.0",
+  "description": "API TechU Practitioner",
+  "main": "server.js",
+  "scripts": {
+    "dev": "npx nodemon sever.js",
+    "prod": "node sever.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.4"
+  }
+}
