@@ -62,3 +62,12 @@ app.put(URL_BASE+'/users/:id',
         response.send(put_user);
     }
 )
+
+app.delete(URL_BASE+'/users/:id',
+    function(request, response){
+        let pos = users.findIndex(user => user.ID == request.params.id);
+        console.log('user a eliminar en posicion', pos);
+        users.splice(pos, 1);
+        response.send({"msg": "Usuario eliminado: "+ request.params.id + ", en posicion: "+ pos});
+    }
+)
