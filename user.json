@@ -1,3 +1,1 @@
-[
-    {"ID":1, "first_name": "Luis", "last_name": "Castillejo", "email": "luisricardo.castillejo@bbva.com", "password": "admin"}
-]
+[{"id":1,"first_name":"Luis","last_name":"Castillejo","email":"luisricardo.castillejo@bbva.com","password":"admin"},{"id":2,"email":"test@test.com","password":"1234"}]
