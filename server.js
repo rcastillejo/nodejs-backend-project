@@ -42,7 +42,7 @@ app.post(URL_BASE+'/users',
             "password": request.body.password
         }
         users.push(new_user);
-        response.send(new_user);
+        response.status(201).send(new_user);
     }
 )
 
