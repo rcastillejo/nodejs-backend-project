@@ -136,3 +136,10 @@ app.post(URL_BASE + '/logout/:id',
       }
     }
 });
+
+
+app.get(URL_BASE+'/total_users',
+    function(request, response){
+        response.send({"num_usuarios":users.length});
+    }
+)
