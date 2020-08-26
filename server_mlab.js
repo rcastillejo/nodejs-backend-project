@@ -25,10 +25,26 @@ app.get('/holamundo',
 app.get(URL_BASE+'/users',
     function(request, response){
         const http_client = request_json.createClient(URL_DATABASE);
+        console.log("Cliente HTTP mLab creado.");
         let field_param = 'f={"_id":0}&';
-          http_client.get('user_account?' + field_param + apikey_mlab, 
-            function(err, res, body){
-            response.send(body);
+        http_client.get('user_account?' + field_param + apikey_mlab, 
+          function(error, res_mlab, body){
+            console.log('Error: ', error);
+            console.log('Respuesta MLab: ', res_mlab);
+            console.log('Body: ', body);
+            var msg = {};
+            if(error) {
+              msg = {"msg" : "Error al recuperar users de mLab."}
+                response.status(500);
+            } else {
+              if(body.length > 0) {
+                msg = body;
+              } else {
+                msg = {"msg" : "Usuario no encontrado."};
+                response.status(404);
+              }
+            }
+            response.send(msg);
           });
     }
 )
