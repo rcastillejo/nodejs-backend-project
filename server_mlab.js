@@ -61,7 +61,30 @@ app.get(URL_BASE+'/users/:id',
               response.status(500);
           } else {
             if(body.length > 0) {
-              msg = body;
+              msg = body[0];
+            } else {
+              console.log(`Usuario no encontrado ${request.params.id}`);
+              response.status(204);
+            }
+          }
+          response.send(msg);
+        });
+    }
+)
+
+app.get(URL_BASE+'/users/:id/accounts',
+    function(request, response){          
+      const http_client = request_json.createClient(URL_DATABASE);
+      let query_param = `q={"id_user":${request.params.id}}`;
+      http_client.get(`user_account?${query_param}&${field_param}&${apikey_mlab}`, 
+        function(error, res_mlab, body){
+          var msg = {};
+          if(error) {
+            msg = {"msg" : "Error al recuperar user de mLab"}
+              response.status(500);
+          } else {
+            if(body.length > 0) {
+              msg = body[0].account;
             } else {
               console.log(`Usuario no encontrado ${request.params.id}`);
               response.status(204);
