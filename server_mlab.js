@@ -40,8 +40,8 @@ app.get(URL_BASE+'/users',
               if(body.length > 0) {
                 msg = body;
               } else {
-                msg = {"msg" : "Usuario no encontrado."};
-                response.status(404);
+                console.log("Usuarios no encontrados");
+                response.status(204);
               }
             }
             response.send(msg);
@@ -63,8 +63,8 @@ app.get(URL_BASE+'/users/:id',
             if(body.length > 0) {
               msg = body;
             } else {
-              msg = {"msg" : `Usuario no encontrado ${request.params.id}`};
-              response.status(404);
+              console.log(`Usuario no encontrado ${request.params.id}`);
+              response.status(204);
             }
           }
           response.send(msg);
