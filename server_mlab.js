@@ -50,9 +50,26 @@ app.get(URL_BASE+'/users',
 )
 
 app.get(URL_BASE+'/users/:id',
-    function(request, response){
-        let pos = request.params.id - 1;
-        response.send(users[pos]);
+    function(request, response){          
+      const http_client = request_json.createClient(URL_DATABASE);
+      let query_param = 'q={"id_user":'+request.params.id+'}&';
+      let field_param = 'f={"_id":0}&';
+      http_client.get('user_account?' + query_param + field_param + apikey_mlab, 
+        function(error, res_mlab, body){
+          var msg = {};
+          if(error) {
+            msg = {"msg" : "Error al recuperar user de mLab"}
+              response.status(500);
+          } else {
+            if(body.length > 0) {
+              msg = body;
+            } else {
+              msg = {"msg" : "Usuario no encontrado " + request.params.id};
+              response.status(404);
+            }
+          }
+          response.send(msg);
+        });
     }
 )
 
