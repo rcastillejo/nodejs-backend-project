@@ -8,6 +8,7 @@ const URL_BASE = '/apitechu/v2';
 const users = require('./user.json');
 const URL_DATABASE = 'https://api.mlab.com/api/1/databases/techu22db/collections/';
 const apikey_mlab ='apiKey=' +  process.env.API_KEY;
+const field_param = 'f={"_id":0}';
 
 app.listen(port, function(){
     console.log('NodeJS escuchando en el puerto ' + port);
@@ -26,8 +27,7 @@ app.get(URL_BASE+'/users',
     function(request, response){
         const http_client = request_json.createClient(URL_DATABASE);
         console.log("Cliente HTTP mLab creado.");
-        let field_param = 'f={"_id":0}&';
-        http_client.get('user_account?' + field_param + apikey_mlab, 
+        http_client.get(`user_account?${field_param}&${apikey_mlab}`, 
           function(error, res_mlab, body){
             console.log('Error: ', error);
             console.log('Respuesta MLab: ', res_mlab);
@@ -52,9 +52,8 @@ app.get(URL_BASE+'/users',
 app.get(URL_BASE+'/users/:id',
     function(request, response){          
       const http_client = request_json.createClient(URL_DATABASE);
-      let query_param = 'q={"id_user":'+request.params.id+'}&';
-      let field_param = 'f={"_id":0}&';
-      http_client.get('user_account?' + query_param + field_param + apikey_mlab, 
+      let query_param = `q={"id_user":${request.params.id}}`;
+      http_client.get(`user_account?${query_param}&${field_param}&${apikey_mlab}`, 
         function(error, res_mlab, body){
           var msg = {};
           if(error) {
@@ -64,7 +63,7 @@ app.get(URL_BASE+'/users/:id',
             if(body.length > 0) {
               msg = body;
             } else {
-              msg = {"msg" : "Usuario no encontrado " + request.params.id};
+              msg = {"msg" : `Usuario no encontrado ${request.params.id}`};
               response.status(404);
             }
           }
