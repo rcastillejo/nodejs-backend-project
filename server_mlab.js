@@ -53,7 +53,8 @@ app.get(URL_BASE+'/users/:id',
     function(request, response){          
       const http_client = request_json.createClient(URL_DATABASE);
       let query_param = `q={"id_user":${request.params.id}}`;
-      http_client.get(`user_account?${query_param}&${field_param}&${apikey_mlab}`, 
+      let without_account_field_param = 'f={"_id":0, "account": 0}';
+      http_client.get(`user_account?${query_param}&${without_account_field_param}&${apikey_mlab}`, 
         function(error, res_mlab, body){
           var msg = {};
           if(error) {
@@ -76,7 +77,8 @@ app.get(URL_BASE+'/users/:id/accounts',
     function(request, response){          
       const http_client = request_json.createClient(URL_DATABASE);
       let query_param = `q={"id_user":${request.params.id}}`;
-      http_client.get(`user_account?${query_param}&${field_param}&${apikey_mlab}`, 
+      let account_field_param = 'f={"_id":0, "account": 1}';
+      http_client.get(`user_account?${query_param}&${account_field_param}&${apikey_mlab}`, 
         function(error, res_mlab, body){
           var msg = {};
           if(error) {
