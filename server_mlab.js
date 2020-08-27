@@ -99,16 +99,23 @@ app.get(URL_BASE+'/users/:id/accounts',
 
 app.post(URL_BASE+'/users',
     function(request, response){
-        let pos = users.length + 1;
-        let new_user = {
-            "id": pos,
-            "first_name": request.body.first_name,
-            "last_name": request.body.last_name,
-            "email": request.body.email,
-            "password": request.body.password
-        }
-        users.push(new_user);
-        response.status(201).send(new_user);
+      const http_client = request_json.createClient(URL_DATABASE);
+      let count_param = 'c=true';
+      http_client.get(`user_account?${count_param}&${apikey_mlab}`, 
+        function(error, res_mlab, count){            
+          let newId = count + 1;
+          let newUser = {
+              "id_user": newId,
+              "first_name": request.body.first_name,
+              "last_name": request.body.last_name,
+              "email": request.body.email,
+              "password": request.body.password
+          };
+          http_client.post(`user_account?&${apikey_mlab}`, newUser, 
+            function(error, res_mlab, body){
+              response.status(201).send(body);
+            });
+        });
     }
 )
 
