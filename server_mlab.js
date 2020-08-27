@@ -206,6 +206,19 @@ app.post(URL_BASE + '/logout/:id',
 
 app.get(URL_BASE+'/total_users',
     function(request, response){
-        response.send({"num_usuarios":users.length});
+             
+      const http_client = request_json.createClient(URL_DATABASE);
+      let count_param = 'c=true';
+      http_client.get(`user_account?${count_param}&${apikey_mlab}`, 
+        function(error, res_mlab, body){
+          var msg = {};
+          if(error) {
+            msg = {"msg" : "Error al recuperar user de mLab"}
+              response.status(500);
+          } else {
+            msg = {"num_usuarios: ":body};
+          }
+          response.send(msg);
+        });
     }
 )
