@@ -29,9 +29,6 @@ app.get(URL_BASE+'/users',
         console.log("Cliente HTTP mLab creado.");
         http_client.get(`user_account?${field_param}&${apikey_mlab}`, 
           function(error, res_mlab, body){
-            console.log('Error: ', error);
-            console.log('Respuesta MLab: ', res_mlab);
-            console.log('Body: ', body);
             var msg = {};
             if(error) {
               msg = {"msg" : "Error al recuperar users de mLab."}
@@ -137,10 +134,18 @@ app.put(URL_BASE+'/users/:id',
 
 app.delete(URL_BASE+'/users/:id',
     function(request, response){
-        let pos = users.findIndex(user => user.id == request.params.id);
-        console.log('user a eliminar en posicion', pos);
-        users.splice(pos, 1);
-        response.send({"msg": "Usuario eliminado: "+ request.params.id + ", en posicion: "+ pos});
+      const http_client = request_json.createClient(URL_DATABASE);
+      let query_param = `q={"id_user":${request.params.id}}`;
+      let field_param = 'f={"_id":1}';
+      http_client.get(`user_account?${field_param}&${query_param}&${apikey_mlab}`, 
+        function(error, res_mlab, body){
+          let userId = body[0]._id.$oid;
+          console.log('user a eliminar con id', userId);
+          http_client.delete(`user_account/${userId}?&${apikey_mlab}`, 
+          function(error, res_mlab, body){
+            response.status(200).send(body);
+          });
+        });
     }
 )
 
