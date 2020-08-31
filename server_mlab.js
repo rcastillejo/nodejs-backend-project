@@ -62,7 +62,7 @@ app.get(URL_BASE+'/users/:id',
               msg = body[0];
             } else {
               console.log(`Usuario no encontrado ${request.params.id}`);
-              response.status(204);
+              response.status(404);
             }
           }
           response.send(msg);
@@ -157,56 +157,75 @@ app.delete(URL_BASE+'/users/:id',
 // LOGIN - users.json
 app.post(URL_BASE + '/login',
   function(request, response) {
+    const http_client = request_json.createClient(URL_DATABASE);
     console.log("POST login");
     console.log(request.body.email);
     console.log(request.body.password);
     var user = request.body.email;
     var pass = request.body.password;
-    for(us of users) {
-      if(us.email == user) {
-        if(us.password == pass) {
-          us.logged = true;
-          writeUserDataToFile(users);
-          console.log("Login correcto!");
-          response.send({"msg" : "Login correcto.", "idUsuario" : us.id, "logged" : "true"});
-        } else {
-          console.log("Login incorrecto.");
-          response.status(400).send({"msg" : "Login incorrecto."});
+    let query_param = `q={"email":"${user}","password":"${pass}"}`;
+    let field_param = 'f={"_id":1,"id_user":1,"first_name":1}';
+    let limit_param = 'l=1';
+    http_client.get(`user_account?${limit_param}&${field_param}&${query_param}&${apikey_mlab}`, 
+      function(error, res_mlab, body){
+        if(error){
+          return response.status(500).send({"msg": "Error en petición a mLab."});
         }
+        if (body.length < 1) { // Existe un usuario que cumple 'queryString'
+          return response.status(404).send({"msg":"Usuario no válido."});
+        }
+        console.log('user encontrado', body[0]);    
+        let userFound = body[0];
+        let userId = userFound._id.$oid;
+        console.log('user actualizar con id', userId);          
+        var loginComand = {
+          "$set": {"logged": true}
+        };
+        console.log('user comando para actualizar', loginComand);  
+        http_client.put(`user_account/${userId}?&${apikey_mlab}`, loginComand,
+          function(error, res_mlab, body){
+            console.log("Login correcto!");
+            response.send({'msg':'Login correcto', 'email':user, 'userid':userFound.id_user, 'name':userFound.first_name});
+          }
+        );
       }
-    }
+    );
 });
 
-function writeUserDataToFile(data) {
-    var fs = require('fs');
-    var jsonUserData = JSON.stringify(data);
-    fs.writeFile("./user.json", jsonUserData, "utf8",
-     function(err) { //función manejadora para gestionar errores de escritura
-       if(err) {
-         console.log(err);
-       } else {
-         console.log("Datos escritos en 'users.json'.");
-       }
-     }); }
-
 // LOGOUT - users.json
-app.post(URL_BASE + '/logout/:id',
+app.post(URL_BASE + '/logout',
   function(request, response) {
+    const http_client = request_json.createClient(URL_DATABASE);
     console.log("POST logout");
-    var userId = request.params.id;
-    for(us of users) {
-      if(us.id == userId) {
-        if(us.logged) {
-          delete us.logged; // borramos propiedad 'logged'
-          writeUserDataToFile(users);
-          console.log("Logout correcto!");
-          response.send({"msg" : "Logout correcto.", "idUsuario" : us.id});
-        } else {
-          console.log("Logout incorrecto.");
-          response.status(400).send({"msg" : "Logout incorrecto."});
+    let user = request.body.email;
+    let query_param = `q={"email":"${user}","logged":true}`;
+    let field_param = 'f={"_id":1}';
+    let limit_param = 'l=1';
+    
+    http_client.get(`user_account?${limit_param}&${field_param}&${query_param}&${apikey_mlab}`, 
+      function(error, res_mlab, body){
+        if(error){
+          return response.status(500).send({"msg": "Error en petición a mLab."});
         }
+        if (body.length < 1) {
+          return response.status(404).send({"msg":"Logout failed!"});
+        }
+        console.log('user encontrado', body[0]);    
+        let userFound = body[0];
+        let userId = userFound._id.$oid;
+        console.log('user actualizar con id', userId);          
+        var logoutComand = {
+          "$unset": {"logged": true}
+        };
+        console.log('user comando para actualizar', logoutComand);  
+        http_client.put(`user_account/${userId}?&${apikey_mlab}`, logoutComand,
+          function(error, res_mlab, body){
+            console.log("Logout correcto!");
+            response.send({'msg':'Logout correcto', 'email':user});
+          }
+        );
       }
-    }
+    );
 });
 
 
