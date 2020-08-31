@@ -117,18 +117,23 @@ app.post(URL_BASE+'/users',
 )
 
 app.put(URL_BASE+'/users/:id',
-    function(request, response){
-        console.log('request.params', request.params);
-        let pos = request.params.id - 1;
-        let put_user = users[pos];
-        console.log('user', put_user);
-        console.log('request.body', request.body);
-        put_user.first_name = request.body.first_name;
-        put_user.last_name = request.body.last_name;
-        put_user.email = request.body.email;
-        put_user.password = request.body.password;
-        users[pos] = put_user;
-        response.send(put_user);
+    function(request, response){      
+      const http_client = request_json.createClient(URL_DATABASE);
+      let query_param = `q={"id_user":${request.params.id}}`;
+      let field_param = 'f={"_id":1}';
+      http_client.get(`user_account?${field_param}&${query_param}&${apikey_mlab}`, 
+        function(error, res_mlab, body){
+          let userId = body[0]._id.$oid;
+          console.log('user actualizar con id', userId);          
+          var updateUserComand = {
+            "$set": request.body
+          };
+          console.log('user comando para actualizar', updateUserComand);  
+          http_client.put(`user_account/${userId}?&${apikey_mlab}`, updateUserComand,
+            function(error, res_mlab, body){
+              response.status(200).send(body);
+            });
+        });
     }
 )
 
@@ -148,17 +153,6 @@ app.delete(URL_BASE+'/users/:id',
         });
     }
 )
-
-// Petición GET con Query String (req.query)
-app.get(URL_BASE + '/users',
-  function(req, res) {
-    console.log("GET con query string.");
-    console.log(req.query.id);
-    console.log(req.query.country);
-    let pos = users.findIndex(user => user.id == req.query.id);
-    res.send(users[pos - 1]);
-    respuesta.send({"msg" : "GET con query string"});
-});
 
 // LOGIN - users.json
 app.post(URL_BASE + '/login',
