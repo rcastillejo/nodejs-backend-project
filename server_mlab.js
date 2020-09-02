@@ -5,10 +5,13 @@ const request_json = require('request-json');
 const app = express();
 const port = process.env.PORT || 3000;
 const URL_BASE = '/apitechu/v2';
-const users = require('./user.json');
 const URL_DATABASE = 'https://api.mlab.com/api/1/databases/techu22db/collections/';
 const apikey_mlab ='apiKey=' +  process.env.API_KEY;
 const field_param = 'f={"_id":0}';
+const cors = require('cors');  // Instalar dependencia 'cors' con npm
+
+app.use(cors());
+app.options('*', cors());
 
 app.listen(port, function(){
     console.log('NodeJS escuchando en el puerto ' + port);
