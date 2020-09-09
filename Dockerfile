@@ -13,5 +13,5 @@ ADD . /docker-dir-apitechu
 #Expone a puerto escucha en el puerto 3000 (el mismo que se uso en la API)
 EXPOSE 3000
 
-# comando para lanzar app
+# comando para lanzar ap
 CMD ["npm", "run", "prod"]
