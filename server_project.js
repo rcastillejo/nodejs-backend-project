@@ -29,8 +29,8 @@ app.get('/holamundo',
 app.get(URL_BASE+'/accounts',
     function(request, response){
         const http_client = request_json.createClient(URL_DATABASE);
-        console.log("Cliente HTTP mLab creado.");
-        http_client.get(`account_movements?${field_param}&${apikey_mlab}`, 
+        let query_param = request.query.iban ? `q={"iban":"${request.query.iban}"}` : '';
+        http_client.get(`account_movements?${field_param}&${query_param}&${apikey_mlab}`, 
           function(error, res_mlab, body){
             var msg = {};
             if(error) {
@@ -106,3 +106,53 @@ app.delete(URL_BASE+'/accounts/:id',
         });
     }
 )
+
+
+app.post(URL_BASE+'/movements',
+    function(request, response){
+      const http_client = request_json.createClient(URL_DATABASE);
+      let date_movement = new Date();
+      let from_account_query = `q={"iban":"${request.body.from_iban}"}`;
+      let from_account_field = 'f={"_id":1}';
+      http_client.get(`account_movements?${from_account_query}&${from_account_field}&${apikey_mlab}`, 
+        function(error, res_mlab, body){
+          console.log('fromn account', body);
+          let from_account_id = body[0]._id.$oid;
+          
+          let to_account_query = `q={"iban":"${request.body.to_iban}"}`;
+          let to_account_field = 'f={"_id":1}';
+          http_client.get(`account_movements?${to_account_query}&${to_account_field}&${apikey_mlab}`, 
+          
+          function(error, res_mlab, body){
+            let to_account_id = body[0]._id.$oid;
+                  
+            let from_account_movement_comand = {
+              "$push": {"movements": {
+                "amount": request.body.amount * -1,
+                "date": date_movement
+              }}
+            };
+            
+            let to_account_movement_comand = {
+              "$push": {"movements": {
+                "amount": request.body.amount * 1,
+                "date": date_movement
+              }}
+            };
+
+            http_client.put(`account_movements/${from_account_id}?&${apikey_mlab}`, from_account_movement_comand,
+              function(error, res_mlab, body){
+                console.log("from_account_movement_comand correcto!", from_account_movement_comand);
+
+                http_client.put(`account_movements/${to_account_id}?&${apikey_mlab}`, to_account_movement_comand,
+                  function(error, res_mlab, body){
+                    console.log("to_account_movement_comand correcto!", to_account_movement_comand);
+                    response.status(201).send(request.body);
+                  }
+                );
+              }
+            );
+
+          });
+    })
+  })
