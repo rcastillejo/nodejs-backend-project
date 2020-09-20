@@ -1,0 +1,24 @@
+{
+    "family": "example-ecs-app",
+    "networkMode": "awsvpc",
+    "containerDefinitions": [
+      {
+        "name": "node-app",
+        "image": "${IMAGE_NAME}",
+        "portMappings": [
+          {
+            "containerPort": 3000,
+            "hostPort": 3000,
+            "protocol": "tcp"
+          }
+        ],
+        "essential": true
+      }
+    ],
+    "requiresCompatibilities": [
+      "FARGATE"
+    ],
+    "cpu": "256",
+    "memory": "512"
+  }
+  

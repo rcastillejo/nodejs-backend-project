@@ -17,3 +17,20 @@ pipelines:
       - docker push "${IMAGE_NAME}:${VERSION}"
      services:
       - docker
+  - step:
+      name: Deploy to ECS
+      script:
+        - VERSION="0.1.${BITBUCKET_BUILD_NUMBER}"
+        # Replace the docker image name in the task definition with the newly pushed image.
+        - export IMAGE_NAME="rcastillejo/techu-project:${VERSION}"
+        - envsubst < task-definition-template.json >  task-definition.json
+
+        # Update the task definition.
+        - pipe: atlassian/aws-ecs-deploy:1.0.0
+          variables:
+            AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
+            AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
+            AWS_DEFAULT_REGION: $AWS_DEFAULT_REGION
+            CLUSTER_NAME: 'example-ecs-cluster'
+            SERVICE_NAME: 'example-ecs-service'
+            TASK_DEFINITION: 'task-definition.json'
