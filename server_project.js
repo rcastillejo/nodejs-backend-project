@@ -49,6 +49,30 @@ app.get(URL_BASE+'/accounts',
     }
 )
 
+app.get(URL_BASE+'/accounts/:id',
+    function(request, response){
+        const http_client = request_json.createClient(URL_DATABASE);
+        let query_param = `q={"id_account":${request.params.id}}`;
+        console.log("Cliente HTTP mLab creado.");
+        http_client.get(`account_movements?${field_param}&${query_param}&${apikey_mlab}`, 
+          function(error, res_mlab, body){
+            var msg = {};
+            if(error) {
+              msg = {"msg" : "Por el momento no podemos ayudarle"}
+                response.status(500);
+            } else {
+              if(body.length > 0) {
+                msg = body;
+              } else {
+                msg = {"msg" : "No tiene cuentas disponibles"};
+                response.status(404);
+              }
+            }
+            response.send(msg);
+          });
+    }
+)
+
 app.post(URL_BASE+'/accounts',
     function(request, response){
       const http_client = request_json.createClient(URL_DATABASE);
