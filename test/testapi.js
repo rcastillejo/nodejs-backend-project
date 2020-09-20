@@ -35,12 +35,13 @@ describe('Movimientos', () => {
         chai.request('http://localhost:3000')
             .get('/apitechu/v0/accounts')
             .end((err, res) => {
-                console.log(res.body[0]);
                 res.body[0].should.have.property('id_account');
                 res.body[0].should.have.property('iban');
+                res.body[1].should.have.property('id_account');
+                res.body[1].should.have.property('iban');
                 done()
             })
-    })    
+    })
 
     it('Agregando un movimiento cuando ambas cuentas existan', (done) => {
         chai.request('http://localhost:3000')
@@ -52,6 +53,17 @@ describe('Movimientos', () => {
             })
             .end((err, res, body) => {
                 res.status.should.equal(201);
+                done()
+            })
+    })
+    
+    it.skip('Verificando las movimientos', (done) => {
+        chai.request('http://localhost:3000')
+            .get('/apitechu/v0/movements')
+            .end((err, res) => {
+                console.log(body);
+                res.body[0].should.have.property('movements');
+                res.body[1].should.have.property('movements');
                 done()
             })
     })

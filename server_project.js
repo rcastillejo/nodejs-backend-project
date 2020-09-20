@@ -113,15 +113,14 @@ app.post(URL_BASE+'/movements',
       const http_client = request_json.createClient(URL_DATABASE);
       let date_movement = new Date();
       let from_account_query = `q={"iban":"${request.body.from_iban}"}`;
-      let from_account_field = 'f={"_id":1}';
-      http_client.get(`account_movements?${from_account_query}&${from_account_field}&${apikey_mlab}`, 
+      let account_field = 'f={"_id":1}';
+      http_client.get(`account_movements?${from_account_query}&${account_field}&${apikey_mlab}`, 
         function(error, res_mlab, body){
           console.log('fromn account', body);
           let from_account_id = body[0]._id.$oid;
           
           let to_account_query = `q={"iban":"${request.body.to_iban}"}`;
-          let to_account_field = 'f={"_id":1}';
-          http_client.get(`account_movements?${to_account_query}&${to_account_field}&${apikey_mlab}`, 
+          http_client.get(`account_movements?${to_account_query}&${account_field}&${apikey_mlab}`, 
           
           function(error, res_mlab, body){
             let to_account_id = body[0]._id.$oid;
@@ -156,3 +155,27 @@ app.post(URL_BASE+'/movements',
           });
     })
   })
+
+  
+app.get(URL_BASE+'/movements',
+  function(request, response){
+      const http_client = request_json.createClient(URL_DATABASE);
+      let field_param = 'f={"_id":0, "movements":1, "iban": 1}';
+      http_client.get(`account_movements?${field_param}&${apikey_mlab}`, 
+        function(error, res_mlab, body){
+          var msg = {};
+          if(error) {
+            msg = {"msg" : "Por el momento no podemos ayudarle"}
+              response.status(500);
+          } else {
+            if(body.length > 0) {
+              msg = body;
+            } else {
+              msg = {"msg" : "No tiene cuentas disponibles"};
+              response.status(404);
+            }
+          }
+          response.send(msg);
+        });
+  }
+)
