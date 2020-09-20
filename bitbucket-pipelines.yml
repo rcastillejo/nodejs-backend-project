@@ -1,8 +1,7 @@
-image: node:10.8.0
-
 pipelines:
  default:
   - step: 
+     image: node:10.8.0
      name: build and test
      caches:
       - node
@@ -18,6 +17,7 @@ pipelines:
      services:
       - docker
   - step:
+      image: atlassian/default-image:2
       name: Deploy to ECS
       script:
         - VERSION="0.1.${BITBUCKET_BUILD_NUMBER}"
