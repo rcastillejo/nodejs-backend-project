@@ -2,12 +2,12 @@ image: node:10.8.0
 
 pipelines:
  default:
+  - variables:
+      API_KEY: $API_KEY
   - step:
      caches:
       - node
      script: 
-      - pipe: atlassian/serverless-deploy:0.1.2
-        variables:
-        API_KEY: $API_KEY
+      - echo 'variable ${API_KEY}'
       - npm install
       - npm test
