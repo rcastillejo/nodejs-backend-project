@@ -12,11 +12,17 @@
             "protocol": "tcp"
           }
         ],
-        "essential": true
+        "essential": true,
+        "environment": [
+          {
+            "name": "API_KEY",
+            "value": "${API_KEY}"
+          }
+        ]
       }
     ],
     "requiresCompatibilities": [
-      "FARGATE"
+      "EC2"
     ],
     "cpu": "256",
     "memory": "512"
