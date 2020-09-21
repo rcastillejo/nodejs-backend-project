@@ -1,9 +1,9 @@
 {
-    "family": "example-ecs-app",
+    "family": "techu-ecs-app",
     "networkMode": "awsvpc",
     "containerDefinitions": [
       {
-        "name": "node-app",
+        "name": "backend-project",
         "image": "${IMAGE_NAME}",
         "portMappings": [
           {
