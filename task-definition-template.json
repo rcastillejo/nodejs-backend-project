@@ -1,6 +1,5 @@
 {
     "family": "techu-ecs-app",
-    "networkMode": "awsvpc",
     "containerDefinitions": [
       {
         "name": "backend-project",
