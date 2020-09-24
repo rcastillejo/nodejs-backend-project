@@ -4,8 +4,8 @@
   "description": "API TechU Practitioner",
   "main": "server.js",
   "scripts": {
-    "dev": "nodemon server_project.js",
-    "prod": "node server_project.js",
+    "dev": "nodemon server.js",
+    "prod": "node server.js",
     "test": "mocha --exit --timeout 10000"
   },
   "keywords": [
