@@ -19,7 +19,7 @@ describe('Movimientos', () => {
                 done()
             })
     })
-    
+
     it('Agregando cuenta 2 ', (done) => {
         chai.request('http://localhost:3000')
             .post('/apitechu/v0/accounts')
@@ -56,7 +56,7 @@ describe('Movimientos', () => {
                 done()
             })
     })
-    
+
     it.skip('Verificando las movimientos', (done) => {
         chai.request('http://localhost:3000')
             .get('/apitechu/v0/movements')
@@ -67,7 +67,7 @@ describe('Movimientos', () => {
                 done()
             })
     })
-    
+
     it('Eliminando cuenta 1 ', (done) => {
         chai.request('http://localhost:3000')
             .delete('/apitechu/v0/accounts/1')
@@ -77,7 +77,7 @@ describe('Movimientos', () => {
                 done()
             })
     })
-    
+
     it('Elimando cuenta 2 ', (done) => {
         chai.request('http://localhost:3000')
             .delete('/apitechu/v0/accounts/2')
