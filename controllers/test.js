@@ -1,0 +1,9 @@
+'use strict'
+
+function test(request, response) {
+  response.send("Hola Mundo");
+}
+
+module.exports = {
+  test,
+};
