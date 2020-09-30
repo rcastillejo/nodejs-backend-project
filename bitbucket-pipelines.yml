@@ -37,9 +37,9 @@ pipelines:
               SERVICE_NAME: 'techu-ecs-service'
               TASK_DEFINITION: 'task-definition.json'
     - step:
-      image: openshift/origin-cli
-      name: Deploy to Openshift
-      script:
-        - oc login "https://${OPS_INSTANCE}.environments.katacoda.com:443" --token="${OPS_ACCESS_TOKEN}"
-        - oc project myproject
-        - oc rollout latest dc/techu-project -n myproject
+        image: openshift/origin-cli
+        name: Deploy to Openshift
+        script:
+          - oc login "https://${OPS_INSTANCE}.environments.katacoda.com:443" --token="${OPS_ACCESS_TOKEN}"
+          - oc project myproject
+          - oc rollout latest dc/techu-project -n myproject
