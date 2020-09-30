@@ -17,21 +17,29 @@ pipelines:
       - docker push "${IMAGE_NAME}"
      services:
       - docker
-  - step:
-      image: atlassian/default-image:2
-      name: Deploy to ECS
-      script:
-        - VERSION="0.1.${BITBUCKET_BUILD_NUMBER}"
-        # Replace the docker image name in the task definition with the newly pushed image.
-        - export IMAGE_NAME="rcastillejo/techu-project:${VERSION}"
-        - envsubst < task-definition-template.json >  task-definition.json
+  - parallel:
+    - step:
+        image: atlassian/default-image:2
+        name: Deploy to ECS
+        script:
+          - VERSION="0.1.${BITBUCKET_BUILD_NUMBER}"
+          # Replace the docker image name in the task definition with the newly pushed image.
+          - export IMAGE_NAME="rcastillejo/techu-project:${VERSION}"
+          - envsubst < task-definition-template.json >  task-definition.json
 
-        # Update the task definition.
-        - pipe: atlassian/aws-ecs-deploy:1.2.0
-          variables:
-            AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
-            AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
-            AWS_DEFAULT_REGION: $AWS_DEFAULT_REGION
-            CLUSTER_NAME: 'default'
-            SERVICE_NAME: 'techu-ecs-service'
-            TASK_DEFINITION: 'task-definition.json'
+          # Update the task definition.
+          - pipe: atlassian/aws-ecs-deploy:1.2.0
+            variables:
+              AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
+              AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
+              AWS_DEFAULT_REGION: $AWS_DEFAULT_REGION
+              CLUSTER_NAME: 'default'
+              SERVICE_NAME: 'techu-ecs-service'
+              TASK_DEFINITION: 'task-definition.json'
+    - step:
+      image: openshift/origin-cli
+      name: Deploy to Openshift
+      script:
+        - oc login "https://${OPS_INSTANCE}.environments.katacoda.com:443" --token="${OPS_ACCESS_TOKEN}"
+        - oc project myproject
+        - oc rollout latest dc/techu-project -n myproject
