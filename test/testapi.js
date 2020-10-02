@@ -9,6 +9,9 @@ chai.use(chaiHttp);
 
 
 describe('Movimientos', () => {
+    before(function () {
+      this.skip();
+    });
     it('Agregando cuenta 1 ', (done) => {
         chai.request('http://localhost:3000')
             .post('/apitechu/v0/accounts')
