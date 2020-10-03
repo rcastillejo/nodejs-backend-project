@@ -2,12 +2,18 @@
 
 const express = require('express');
 const test = require('../controllers/test');
+const userController = require('../controllers/user');
 const accountController = require('../controllers/account');
 const movementController = require('../controllers/movement');
 const api = express.Router();
 
 api.get('/holamundo', test.test);
-//ACCOUNTS
+//USERS
+api.get('/users', userController.getUsers);
+api.post('/users', userController.saveUser);
+api.put('/users/:id', userController.updateUser);
+api.delete('/users/:id', userController.removeUser);
+//ACCOUNTS MOVEMENTS
 api.get('/accounts', accountController.getAccounts);
 api.get('/accounts/:id', accountController.getAccount);
 api.post('/accounts', accountController.createAccount);
