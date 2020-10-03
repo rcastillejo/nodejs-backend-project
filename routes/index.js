@@ -12,8 +12,8 @@ api.get('/accounts', accountController.getAccounts);
 api.get('/accounts/:id', accountController.getAccount);
 api.post('/accounts', accountController.createAccount);
 api.delete('/accounts/:id', accountController.deleteAccount);
+api.post('/accounts/:id/movements', accountController.createAccountMovement);
 //MOVEMENTS
 api.get('/movements', movementController.getMovements);
-api.post('/movements', movementController.createMovement);
 
 module.exports = api;

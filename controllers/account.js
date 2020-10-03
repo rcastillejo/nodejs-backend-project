@@ -63,21 +63,29 @@ function getAccount(request, response) {
 function createAccount(request, response) {
   console.log('Agregando cuenta');
   const client = requestJson.createClient(url);
+  let queryParam = `q={"alias":"${request.body.alias}"}`;
 
-  let data = {
-    "alias": request.body.alias,
-    "balance": 0.00
-  };
-
-  client.post(`${config.mlab_collection_account_movements}?&${config.mlab_key}`, data,
+  client.get(`${config.mlab_collection_account_movements}?${fieldParam}&${queryParam}&${config.mlab_key}`,
     function (err, res, body) {
-      response.status(201).send({
-        "account": body._id.$oid,
-        "alias": body.alias,
-        "balance": body.balance
-      });
-    }
-  );
+      if (body.length > 0) {
+        response.status(400).send({ "msg": "Cuenta ya existe" });
+      } else {
+        let data = {
+          "alias": request.body.alias,
+          "balance": request.body.balance || 0.00
+        };
+
+        client.post(`${config.mlab_collection_account_movements}?&${config.mlab_key}`, data,
+          function (err, res, body) {
+            response.status(201).send({
+              "account": body._id.$oid,
+              "alias": body.alias,
+              "balance": body.balance
+            });
+          }
+        );
+      }
+    });
 }
 
 function deleteAccount(request, response) {
@@ -101,9 +109,60 @@ function deleteAccount(request, response) {
     });
 }
 
+function createAccountMovement(request, response) {
+  const client = requestJson.createClient(url);
+
+  let movementDate = new Date();
+
+  let fromAccount = request.params.id;
+  let toAccount = request.body.to;
+
+  client.get(`${config.mlab_collection_account_movements}/${fromAccount}?${config.mlab_key}`,
+    function (err, res, body) {
+      client.get(`${config.mlab_collection_account_movements}/${toAccount}?${config.mlab_key}`,
+        function (err, res, body) {
+
+          let fromAccountMovement = {
+            "$push": {
+              "movements": {
+                "to": toAccount,
+                "amount": request.body.amount * -1,
+                "date": movementDate
+              }
+            }
+          };
+
+          let toAccountMovement = {
+            "$push": {
+              "movements": {
+                "from": fromAccount,
+                "amount": request.body.amount * 1,
+                "date": movementDate
+              }
+            }
+          };
+
+          client.put(`${config.mlab_collection_account_movements}/${fromAccount}?&${config.mlab_key}`, fromAccountMovement,
+            function (err, res, body) {
+              console.log("from_account_movement_comand correcto!", fromAccountMovement);
+
+              client.put(`${config.mlab_collection_account_movements}/${toAccount}?&${config.mlab_key}`, toAccountMovement,
+                function (err, res, body) {
+                  console.log("to_account_movement_comand correcto!", toAccountMovement);
+                  response.status(201).send(request.body);
+                }
+              );
+            }
+          );
+
+        });
+    })
+}
+
 module.exports = {
   getAccounts,
   getAccount,
   createAccount,
-  deleteAccount
+  deleteAccount,
+  createAccountMovement
 };
