@@ -7,7 +7,7 @@ const { body, validationResult } = require('express-validator');
 
 function getUsers(request, response) {
   let client = requestJson.createClient(url);
-  let queryParam = request.query.alias ? `q={"email":"${request.query.email}"}` : '';
+  let queryParam = `q={"email":"${request.query.email}"}`;
   client.get(`${config.mlab_collection_users}?${queryParam}&${config.mlab_key}`, function (err, res, body) {
     let data;
     if (err) {
@@ -94,7 +94,12 @@ function updateUser(request, response) {
     }
   };
   client.put(`${config.mlab_collection_users}/${userId}?&${config.mlab_key}`, userToUpdate, function (err, resM, body) {
-    response.send(body);
+    response.send({
+      "id": body._id.$oid,
+      "firstname": body.first_name,
+      "lastname": body.last_name,
+      "email": body.email
+    });
   });
 };
 
