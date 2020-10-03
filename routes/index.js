@@ -13,6 +13,7 @@ api.get('/accounts/:id', accountController.getAccount);
 api.post('/accounts', accountController.createAccount);
 api.delete('/accounts/:id', accountController.deleteAccount);
 api.post('/accounts/:id/movements', accountController.createAccountMovement);
+api.get('/accounts/:id/movements', accountController.getAccountMovements);
 //MOVEMENTS
 api.get('/movements', movementController.getMovements);
 

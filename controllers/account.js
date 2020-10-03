@@ -159,10 +159,34 @@ function createAccountMovement(request, response) {
     })
 }
 
+function getAccountMovements(request, response) {
+  const client = requestJson.createClient(url);
+  let account = request.params.id;
+  console.log(`Consultando cuenta ${account}`);
+  client.get(`${config.mlab_collection_account_movements}/${account}?${config.mlab_key}`,
+    function (err, res, body) {
+      console.log('respuesta', body);
+      let data;
+      if (err) {
+        data = { "msg": "Por el momento no podemos ayudarle" }
+        response.status(500);
+      } else {
+        if (body) {
+          data = body.movements;
+        } else {
+          data = { "msg": "No tiene cuentas disponibles" };
+          response.status(404);
+        }
+      }
+      response.send(data);
+    });
+}
+
 module.exports = {
   getAccounts,
   getAccount,
   createAccount,
   deleteAccount,
-  createAccountMovement
+  createAccountMovement,
+  getAccountMovements
 };

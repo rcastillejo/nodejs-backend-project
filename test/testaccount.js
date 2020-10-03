@@ -170,6 +170,55 @@ describe('Transfiero entre cuentas', () => {
             })
     })
 
+    it(`Consultando movimientos de cuenta1`, (done) => {
+        chai.request('http://localhost:3000')
+            .get(`/apitechu/v0/accounts/${account1}/movements`)
+            .end((err, res, body) => {
+                res.status.should.equal(200);
+                res.body.length.should.equal(2);
+
+                res.body[0].should.have.property('to');
+                res.body[0].should.have.property('amount');
+                res.body[0].should.have.property('date');
+
+                res.body[0].to.should.equal(account2);
+                res.body[0].amount.should.equal(-1.00);
+
+                res.body[1].should.have.property('from');
+                res.body[1].should.have.property('amount');
+                res.body[1].should.have.property('date');
+
+                res.body[1].from.should.equal(account2);
+                res.body[1].amount.should.equal(1.00);
+
+                done()
+            })
+    })
+
+    it(`Consultando movimientos de cuenta2`, (done) => {
+        chai.request('http://localhost:3000')
+            .get(`/apitechu/v0/accounts/${account2}/movements`)
+            .end((err, res, body) => {
+                res.status.should.equal(200);
+                res.body.length.should.equal(2);
+
+                res.body[0].should.have.property('from');
+                res.body[0].should.have.property('amount');
+                res.body[0].should.have.property('date');
+
+                res.body[0].from.should.equal(account1);
+                res.body[0].amount.should.equal(1.00);
+
+                res.body[1].should.have.property('to');
+                res.body[1].should.have.property('amount');
+                res.body[1].should.have.property('date');
+
+                res.body[1].to.should.equal(account1);
+                res.body[1].amount.should.equal(-1.00);
+                done()
+            })
+    })
+
     it(`Eliminando cuenta1`, (done) => {
         chai.request('http://localhost:3000')
             .delete(`/apitechu/v0/accounts/${account1}`)
