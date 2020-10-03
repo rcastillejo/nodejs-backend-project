@@ -66,8 +66,7 @@ function saveUser(request, response) {
             "id": body._id.$oid,
             "firstname": body.first_name,
             "lastname": body.last_name,
-            "email": body.email,
-            "password": request.body.password
+            "email": body.email
           });
         }
       });
@@ -81,7 +80,7 @@ function updateUser(request, response) {
   body("firstname", "Por favor ingrese su nombre").notEmpty();
   body("lastname", "Por favor ingrese su apellido").notEmpty();
   body("email", "Por favor ingrese su correo").isEmail();
-  
+
   let errors = validationResult(request);;
   if (!errors.isEmpty()) {response.status(400).send({ errors: errors.array() }); return; }
 
