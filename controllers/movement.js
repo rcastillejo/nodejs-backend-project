@@ -6,7 +6,7 @@ const url = config.mlab_host + config.mlab_db + 'collections/';
 
 function getMovements(request, response) {
   const client = requestJson.createClient(url);
-  let fieldParam = 'f={"_id":1, "movements":1}';
+  let fieldParam = '';
   client.get(`${config.mlab_collection_account_movements}?${fieldParam}&${config.mlab_key}`,
     function (err, res, body) {
       var msg = {};
@@ -19,7 +19,7 @@ function getMovements(request, response) {
           body.map(function (acc) {
             acc.movements.map(function (mov) {
               msg.push({
-                "alias": acc._id.$oid,
+                "alias": acc.alias,
                 "amount": mov.amount,
                 "date": mov.date
               });

@@ -76,14 +76,14 @@ describe('Movimientos', () => {
                 res.body[0].should.have.property('amount');
                 res.body[0].should.have.property('date');
 
-                res.body[0].alias.should.equal(account1);
+                res.body[0].alias.should.equal(alias1);
                 res.body[0].amount.should.equal(-1.00);
 
                 res.body[1].should.have.property('alias');
                 res.body[1].should.have.property('amount');
                 res.body[1].should.have.property('date');
 
-                res.body[1].alias.should.equal(account2);
+                res.body[1].alias.should.equal(alias2);
                 res.body[1].amount.should.equal(1.00);
 
                 done()
