@@ -3,6 +3,7 @@
 const express = require('express');
 const test = require('../controllers/test');
 const userController = require('../controllers/user');
+const authController = require('../controllers/auth');
 const accountController = require('../controllers/account');
 const movementController = require('../controllers/movement');
 const api = express.Router();
@@ -22,5 +23,8 @@ api.post('/accounts/:id/movements', accountController.createAccountMovement);
 api.get('/accounts/:id/movements', accountController.getAccountMovements);
 //MOVEMENTS
 api.get('/movements', movementController.getMovements);
+//LOGIN
+api.post('/login', authController.login);
+api.post('/logout', authController.logout);
 
 module.exports = api;

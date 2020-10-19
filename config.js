@@ -7,5 +7,6 @@ module.exports = {
   mlab_key: 'apiKey=' + process.env.API_KEY,
   mlab_collection_account_movements: 'account_movements',
   mlab_collection_users: 'users',
-  URLbase: process.env.URL_BASE || '/apitechu/v0/'
+  URLbase: process.env.URL_BASE || '/apitechu/v0/',
+  SECRET_TOKEN:'TechU2017'
 }

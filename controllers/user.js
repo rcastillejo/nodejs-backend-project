@@ -21,6 +21,7 @@ function getUsers(request, response) {
             "firstname": val.first_name,
             "lastname": val.last_name,
             "email": val.email,
+            "session": val.session
           }
         });
       } else {

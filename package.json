@@ -21,7 +21,9 @@
     "express": "^4.17.1",
     "express-validator": "^6.6.1",
     "fs": "0.0.1-security",
-    "request-json": "^0.6.5"
+    "request-json": "^0.6.5",
+    "jwt-simple": "^0.5.1",
+    "moment": "^2.22.2"
   },
   "devDependencies": {
     "nodemon": "^1.17.4",
