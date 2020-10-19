@@ -6,6 +6,7 @@ const url = config.mlab_host + config.mlab_db + 'collections/';
 const fieldParam = 'f={"_id":0}';
 
 function getAccounts(request, response) {
+  console.log('user', request.user);
   const client = requestJson.createClient(url);
   let queryParam = request.query.alias ? `q={"alias":"${request.query.alias}"}` : '';
   console.log(`Consultando cuentas ${queryParam}`);

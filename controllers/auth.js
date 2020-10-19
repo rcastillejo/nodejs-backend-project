@@ -30,7 +30,7 @@ function login(request, response) {
           if (err) {
             response.status(500).send({ "msg": "Por el momento no podemos ayudarle" });
           } else {
-            response.status(200).send({ token: service.createToken(respuesta.id) });
+            response.status(200).send({ token: service.createToken(userId) });
           }
         })
       } else {
