@@ -25,6 +25,9 @@ function getMovements(request, response) {
               });
             })
           });
+          msg.sort(function(a,b){
+            return new Date(b.date) - new Date(a.date);
+          });
         } else {
           msg = { "msg": "No tiene cuentas disponibles" };
           response.status(404);
