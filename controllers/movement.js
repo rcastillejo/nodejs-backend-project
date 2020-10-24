@@ -6,8 +6,8 @@ const url = config.mlab_host + config.mlab_db + 'collections/';
 
 function getMovements(request, response) {
   const client = requestJson.createClient(url);
-  let fieldParam = '';
-  client.get(`${config.mlab_collection_account_movements}?${fieldParam}&${config.mlab_key}`,
+  let queryParam = `q={"user": "${request.user}"}`;
+  client.get(`${config.mlab_collection_account_movements}?${queryParam}&${config.mlab_key}`,
     function (err, res, body) {
       var msg = {};
       if (err) {
