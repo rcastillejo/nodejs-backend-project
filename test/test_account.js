@@ -33,7 +33,6 @@ describe('Cuentas & movimientos', () => {
             .post(`/apitechu/v0/login`)
             .send(user)
             .end((err, res, body) => {
-                console.log('body', body);
                 res.status.should.equal(200);
 
                 res.body.should.have.property('token');
@@ -55,7 +54,6 @@ describe('Cuentas & movimientos', () => {
                 .set({ "Authorization": `Bearer ${token}` })
                 .send({ "alias": alias })
                 .end((err, res, body) => {
-                    console.log('res', res.text);
                     res.status.should.equal(201);
 
                     res.body.should.have.property('account');
@@ -125,8 +123,8 @@ describe('Cuentas & movimientos', () => {
     })
 
     describe('Transfiero entre cuentas', () => {
-        let alias1 = "DEMO1";
-        let alias2 = "DEMO2";
+        let alias1 = mocks.alias1;
+        let alias2 = mocks.alias2;
         let account1;
         let account2;
 
@@ -316,7 +314,7 @@ describe('Cuentas & movimientos', () => {
 
     describe('Agregando un nueva cuenta ya existente', () => {
 
-        let alias = "DEMO";
+        let alias = mocks.alias1;
         let account;
         it(`Agregando cuenta ${alias}`, (done) => {
             chai.request('http://localhost:3000')

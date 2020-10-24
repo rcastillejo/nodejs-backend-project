@@ -48,7 +48,6 @@ function saveUser(request, response) {
 
   client.get(`${config.mlab_collection_users}?${queryParam}&${config.mlab_key}`, function (err, res, body) {
     if (body.length > 0) {
-      console.log("error")
       response.status(400).send({ "msg": "El usuario ya existe" });
     } else {
 

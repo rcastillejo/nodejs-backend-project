@@ -6,10 +6,8 @@ const url = config.mlab_host + config.mlab_db + 'collections/';
 const fieldParam = 'f={"_id":0}';
 
 function getAccounts(request, response) {
-  console.log('user', request.user);
   const client = requestJson.createClient(url);
-  let queryParam = `q={"user": "${request.user}"}`;  
-  console.log(`Consultando cuentas ${queryParam}`);
+  let queryParam = `q={"user": "${request.user}"}`;
   client.get(`${config.mlab_collection_account_movements}?${queryParam}&${config.mlab_key}`,
     function (err, res, body) {
       let data;
@@ -19,7 +17,6 @@ function getAccounts(request, response) {
       } else {
         if (body.length > 0) {
           data = body.map(function (val) {
-            console.log("account", val);
             return {
               "account": val._id.$oid,
               "alias": val.alias,
@@ -38,7 +35,6 @@ function getAccounts(request, response) {
 function getAccount(request, response) {
   const client = requestJson.createClient(url);
   let queryParam = `q={"user": "${request.user}", "_id": {"$oid": "${request.params.id}"}}`;
-  console.log(`Consultando cuenta ${queryParam}`);
   client.get(`${config.mlab_collection_account_movements}?${queryParam}&${config.mlab_key}`,
     function (err, res, body) {
       let data;
@@ -62,7 +58,6 @@ function getAccount(request, response) {
 }
 
 function createAccount(request, response) {
-  console.log('Agregando cuenta');
   const client = requestJson.createClient(url);
   let queryParam = `q={"user": "${request.user}", "alias":"${request.body.alias}"}`;
 
@@ -95,11 +90,9 @@ function deleteAccount(request, response) {
   const client = requestJson.createClient(url);
   let queryParam = `q={"user": "${request.user}", "_id": {"$oid": "${request.params.id}"}}`;
   let fieldParam = 'f={"_id":1}';
-  console.log(`Elimando cuenta ${queryParam}`);
   client.get(`${config.mlab_collection_account_movements}?${fieldParam}&${queryParam}&${config.mlab_key}`,
     function (err, res, body) {
       let id = body[0]._id.$oid;
-      console.log('account a eliminar con id', id);
       client.delete(`${config.mlab_collection_account_movements}/${id}?&${config.mlab_key}`,
         function (err, res, body) {
           response.status(200).send({
@@ -154,11 +147,8 @@ function createAccountMovement(request, response) {
 
           client.put(`${config.mlab_collection_account_movements}/${fromAccount}?&${config.mlab_key}`, fromAccountMovement,
             function (err, res, body) {
-              console.log("from_account_movement_comand correcto!", fromAccountMovement);
-
               client.put(`${config.mlab_collection_account_movements}/${toAccount}?&${config.mlab_key}`, toAccountMovement,
                 function (err, res, body) {
-                  console.log("to_account_movement_comand correcto!", toAccountMovement);
                   response.status(201).send(request.body);
                 }
               );
@@ -172,10 +162,8 @@ function createAccountMovement(request, response) {
 function getAccountMovements(request, response) {
   const client = requestJson.createClient(url);
   let account = request.params.id;
-  console.log(`Consultando cuenta ${account}`);
   client.get(`${config.mlab_collection_account_movements}/${account}?${config.mlab_key}`,
     function (err, res, body) {
-      console.log('respuesta', body);
       let data;
       if (err) {
         data = { "msg": "Por el momento no podemos ayudarle" }

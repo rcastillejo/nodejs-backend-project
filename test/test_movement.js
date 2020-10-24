@@ -15,8 +15,8 @@ let token;
 
 describe('Movimientos', () => {
 
-    let alias1 = "DEMO11";
-    let alias2 = "DEMO12";
+    let alias1 = mocks.alias1;
+    let alias2 = mocks.alias2;
     let account1;
     let account2;
 
@@ -40,7 +40,6 @@ describe('Movimientos', () => {
             .post(`/apitechu/v0/login`)
             .send(user)
             .end((err, res, body) => {
-                console.log('body', body);
                 res.status.should.equal(200);
 
                 res.body.should.have.property('token');
