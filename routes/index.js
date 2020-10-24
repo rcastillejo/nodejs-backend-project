@@ -13,8 +13,8 @@ api.get('/holamundo', test.test);
 //USERS
 api.get('/users', userController.getUsers);
 api.post('/users', userController.saveUser);
-api.put('/users/:id', seg.isAuth, userController.updateUser);
-api.delete('/users/:id', seg.isAuth, userController.removeUser);
+api.put('/users/:id', userController.updateUser);
+api.delete('/users/:id', userController.removeUser);
 //ACCOUNTS MOVEMENTS
 api.get('/accounts', seg.isAuth, accountController.getAccounts);
 api.get('/accounts/:id', seg.isAuth, accountController.getAccount);

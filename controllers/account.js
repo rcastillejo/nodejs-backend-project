@@ -8,7 +8,7 @@ const fieldParam = 'f={"_id":0}';
 function getAccounts(request, response) {
   console.log('user', request.user);
   const client = requestJson.createClient(url);
-  let queryParam = request.query.alias ? `q={"alias":"${request.query.alias}"}` : '';
+  let queryParam = `q={"user": "${request.user}"}`;  
   console.log(`Consultando cuentas ${queryParam}`);
   client.get(`${config.mlab_collection_account_movements}?${queryParam}&${config.mlab_key}`,
     function (err, res, body) {
@@ -37,7 +37,7 @@ function getAccounts(request, response) {
 
 function getAccount(request, response) {
   const client = requestJson.createClient(url);
-  let queryParam = `q={"_id": {"$oid": "${request.params.id}"}}`;
+  let queryParam = `q={"user": "${request.user}", "_id": {"$oid": "${request.params.id}"}}`;
   console.log(`Consultando cuenta ${queryParam}`);
   client.get(`${config.mlab_collection_account_movements}?${queryParam}&${config.mlab_key}`,
     function (err, res, body) {
@@ -64,7 +64,7 @@ function getAccount(request, response) {
 function createAccount(request, response) {
   console.log('Agregando cuenta');
   const client = requestJson.createClient(url);
-  let queryParam = `q={"alias":"${request.body.alias}"}`;
+  let queryParam = `q={"user": "${request.user}", "alias":"${request.body.alias}"}`;
 
   client.get(`${config.mlab_collection_account_movements}?${fieldParam}&${queryParam}&${config.mlab_key}`,
     function (err, res, body) {
@@ -72,6 +72,7 @@ function createAccount(request, response) {
         response.status(400).send({ "msg": "Cuenta ya existe" });
       } else {
         let data = {
+          "user": request.user,
           "alias": request.body.alias,
           "balance": request.body.balance || 0.00
         };
@@ -92,7 +93,7 @@ function createAccount(request, response) {
 function deleteAccount(request, response) {
 
   const client = requestJson.createClient(url);
-  let queryParam = `q={"_id": {"$oid": "${request.params.id}"}}`;
+  let queryParam = `q={"user": "${request.user}", "_id": {"$oid": "${request.params.id}"}}`;
   let fieldParam = 'f={"_id":1}';
   console.log(`Elimando cuenta ${queryParam}`);
   client.get(`${config.mlab_collection_account_movements}?${fieldParam}&${queryParam}&${config.mlab_key}`,

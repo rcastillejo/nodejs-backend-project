@@ -2,18 +2,14 @@ var mocha = require('mocha');
 var chai = require('chai');
 var chaiHttp = require('chai-http');
 var server = require('../server');
+var mocks = require('./mocks');
 
 var should = chai.should();
 
 chai.use(chaiHttp);
 
 
-let user = {
-    "firstname": "Ricardo",
-    "lastname": "Castillejo",
-    "email": "rcastillejo@gmail.com",
-    "password": "Admin1234"
-};
+let user = mocks.user;
 let userId;
 
 describe('Iniciando y cerrando sesion', () => {
