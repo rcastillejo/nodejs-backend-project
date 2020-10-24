@@ -124,7 +124,7 @@ describe('Cuentas & movimientos', () => {
 
     })
 
-    describe.skip('Transfiero entre cuentas', () => {
+    describe('Transfiero entre cuentas', () => {
         let alias1 = "DEMO1";
         let alias2 = "DEMO2";
         let account1;
@@ -133,6 +133,7 @@ describe('Cuentas & movimientos', () => {
         it(`Agregando cuenta1`, (done) => {
             chai.request('http://localhost:3000')
                 .post('/apitechu/v0/accounts')
+                .set({ "Authorization": `Bearer ${token}` })
                 .send({ "alias": alias1, "balance": 1.00 })
                 .end((err, res, body) => {
 
@@ -152,6 +153,7 @@ describe('Cuentas & movimientos', () => {
         it(`Agregando cuenta2`, (done) => {
             chai.request('http://localhost:3000')
                 .post('/apitechu/v0/accounts')
+                .set({ "Authorization": `Bearer ${token}` })
                 .send({ "alias": alias2 })
                 .end((err, res, body) => {
 
@@ -172,6 +174,7 @@ describe('Cuentas & movimientos', () => {
         it(`Transfiriendo de cuenta1 a cuenta2`, (done) => {
             chai.request('http://localhost:3000')
                 .post(`/apitechu/v0/accounts/${account1}/movements`)
+                .set({ "Authorization": `Bearer ${token}` })
                 .send({ "to": account2, "amount": 1.00 })
                 .end((err, res, body) => {
                     res.status.should.equal(201);
@@ -179,20 +182,22 @@ describe('Cuentas & movimientos', () => {
                 })
         })
 
-
-        it(`Transfiriendo de cuenta2 a cuenta1`, (done) => {
+        it(`Verificando balance cuenta1`, (done) => {
             chai.request('http://localhost:3000')
-                .post(`/apitechu/v0/accounts/${account2}/movements`)
-                .send({ "to": account1, "amount": 1.00 })
+                .get(`/apitechu/v0/accounts/${account1}`)
+                .set({ "Authorization": `Bearer ${token}` })
                 .end((err, res, body) => {
-                    res.status.should.equal(201);
+                    res.status.should.equal(200);
+                    res.body.should.have.property('balance');
+                    res.body.balance.should.equal(0.00);
                     done()
                 })
         })
 
-        it(`Consultando cuenta1`, (done) => {
+        it(`Verificando balance cuenta2`, (done) => {
             chai.request('http://localhost:3000')
-                .get(`/apitechu/v0/accounts/${account1}`)
+                .get(`/apitechu/v0/accounts/${account2}`)
+                .set({ "Authorization": `Bearer ${token}` })
                 .end((err, res, body) => {
                     res.status.should.equal(200);
                     res.body.should.have.property('balance');
@@ -201,13 +206,37 @@ describe('Cuentas & movimientos', () => {
                 })
         })
 
-        it(`Consultando cuenta2`, (done) => {
+        it(`Transfiriendo de cuenta2 a cuenta1`, (done) => {
             chai.request('http://localhost:3000')
-                .get(`/apitechu/v0/accounts/${account2}`)
+                .post(`/apitechu/v0/accounts/${account2}/movements`)
+                .set({ "Authorization": `Bearer ${token}` })
+                .send({ "to": account1, "amount": 1.00 })
+                .end((err, res, body) => {
+                    res.status.should.equal(201);
+                    done()
+                })
+        })
+
+        it(`Verificando balance cuenta1 de la 2da transferencia`, (done) => {
+            chai.request('http://localhost:3000')
+                .get(`/apitechu/v0/accounts/${account1}`)
+                .set({ "Authorization": `Bearer ${token}` })
                 .end((err, res, body) => {
                     res.status.should.equal(200);
                     res.body.should.have.property('balance');
-                    res.body.balance.should.equal(0);
+                    res.body.balance.should.equal(1.00);
+                    done()
+                })
+        })
+
+        it(`Verificando balance cuenta2 de la 2da transferencia`, (done) => {
+            chai.request('http://localhost:3000')
+                .get(`/apitechu/v0/accounts/${account2}`)
+                .set({ "Authorization": `Bearer ${token}` })
+                .end((err, res, body) => {
+                    res.status.should.equal(200);
+                    res.body.should.have.property('balance');
+                    res.body.balance.should.equal(0.00);
                     done()
                 })
         })
@@ -215,6 +244,7 @@ describe('Cuentas & movimientos', () => {
         it(`Consultando movimientos de cuenta1`, (done) => {
             chai.request('http://localhost:3000')
                 .get(`/apitechu/v0/accounts/${account1}/movements`)
+                .set({ "Authorization": `Bearer ${token}` })
                 .end((err, res, body) => {
                     res.status.should.equal(200);
                     res.body.length.should.equal(2);
@@ -240,6 +270,7 @@ describe('Cuentas & movimientos', () => {
         it(`Consultando movimientos de cuenta2`, (done) => {
             chai.request('http://localhost:3000')
                 .get(`/apitechu/v0/accounts/${account2}/movements`)
+                .set({ "Authorization": `Bearer ${token}` })
                 .end((err, res, body) => {
                     res.status.should.equal(200);
                     res.body.length.should.equal(2);
@@ -264,6 +295,7 @@ describe('Cuentas & movimientos', () => {
         it(`Eliminando cuenta1`, (done) => {
             chai.request('http://localhost:3000')
                 .delete(`/apitechu/v0/accounts/${account1}`)
+                .set({ "Authorization": `Bearer ${token}` })
                 .end((err, res, body) => {
                     res.status.should.equal(200);
                     done()
@@ -273,6 +305,7 @@ describe('Cuentas & movimientos', () => {
         it(`Eliminando cuenta2`, (done) => {
             chai.request('http://localhost:3000')
                 .delete(`/apitechu/v0/accounts/${account2}`)
+                .set({ "Authorization": `Bearer ${token}` })
                 .end((err, res, body) => {
                     res.status.should.equal(200);
                     done()
@@ -281,13 +314,14 @@ describe('Cuentas & movimientos', () => {
 
     })
 
-    describe.skip('Agregando un nueva cuenta ya existente', () => {
+    describe('Agregando un nueva cuenta ya existente', () => {
 
         let alias = "DEMO";
         let account;
         it(`Agregando cuenta ${alias}`, (done) => {
             chai.request('http://localhost:3000')
                 .post('/apitechu/v0/accounts')
+                .set({ "Authorization": `Bearer ${token}` })
                 .send({ "alias": alias })
                 .end((err, res, body) => {
 
@@ -307,6 +341,7 @@ describe('Cuentas & movimientos', () => {
         it(`Agregando cuenta ${alias} ya existente`, (done) => {
             chai.request('http://localhost:3000')
                 .post('/apitechu/v0/accounts')
+                .set({ "Authorization": `Bearer ${token}` })
                 .send({ "alias": alias })
                 .end((err, res, body) => {
 
@@ -321,6 +356,7 @@ describe('Cuentas & movimientos', () => {
         it(`Eliminando cuenta`, (done) => {
             chai.request('http://localhost:3000')
                 .delete(`/apitechu/v0/accounts/${account}`)
+                .set({ "Authorization": `Bearer ${token}` })
                 .end((err, res, body) => {
 
                     res.status.should.equal(200);

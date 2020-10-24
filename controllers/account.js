@@ -123,22 +123,30 @@ function createAccountMovement(request, response) {
     function (err, res, body) {
       client.get(`${config.mlab_collection_account_movements}/${toAccount}?${config.mlab_key}`,
         function (err, res, body) {
-
+          
+          let fromAccountBalance = request.body.amount * -1;
           let fromAccountMovement = {
+            "$inc": {
+              "balance": fromAccountBalance
+            },
             "$push": {
               "movements": {
                 "to": toAccount,
-                "amount": request.body.amount * -1,
+                "amount": fromAccountBalance,
                 "date": movementDate
               }
             }
           };
-
-          let toAccountMovement = {
+          
+          let toAccountBalance = request.body.amount;
+          let toAccountMovement = {              
+            "$inc": {
+              "balance": toAccountBalance
+            },
             "$push": {
               "movements": {
                 "from": fromAccount,
-                "amount": request.body.amount * 1,
+                "amount": toAccountBalance,
                 "date": movementDate
               }
             }
