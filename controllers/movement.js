@@ -17,17 +17,25 @@ function getMovements(request, response) {
         if (body.length > 0) {
           msg = new Array();
           body.map(function (acc) {
-            acc.movements.map(function (mov) {
-              msg.push({
-                "alias": acc.alias,
-                "amount": mov.amount,
-                "date": mov.date
-              });
-            })
+            if (acc.movements) {
+              acc.movements.map(function (mov) {
+                msg.push({
+                  "alias": acc.alias,
+                  "amount": mov.amount,
+                  "date": mov.date
+                });
+              })
+            }
           });
-          msg.sort(function(a,b){
-            return new Date(b.date) - new Date(a.date);
-          });
+
+          if (msg.length > 0) {
+            msg.sort(function (a, b) {
+              return new Date(b.date) - new Date(a.date);
+            });
+          } else {
+            msg = { "msg": "No tiene movimientos disponibles" };
+            response.status(404);
+          }
         } else {
           msg = { "msg": "No tiene cuentas disponibles" };
           response.status(404);
