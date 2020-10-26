@@ -19,11 +19,6 @@ pipelines:
      services:
       - docker
   - step:
-    name: Manual step
-    trigger: manual
-    script:
-      - echo "This step runs once you click the 'Run' button"    
-  - step:
       image: openshift/origin-cli
       name: Deploy to Openshift
       script:
