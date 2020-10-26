@@ -41,7 +41,7 @@ pipelines:
         image: openshift/origin-cli
         name: Deploy to Openshift
         script:
-          - oc login https://openshift:6443 -u developer -p developer
+          - oc login "https://${OPS_INSTANCE}.environments.katacoda.com:443" -u developer -p developer
           - oc project myproject
           - oc rollout latest dc/techu-project -n myproject
           - oc get -o template route myproject --template={{.spec.host}}
