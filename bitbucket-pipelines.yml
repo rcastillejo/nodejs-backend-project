@@ -43,5 +43,5 @@ pipelines:
         script:
           - oc login "https://${OPS_INSTANCE}.environments.katacoda.com:443" -u developer -p developer
           - oc project myproject
-          - oc rollout latest dc/techu-project -n myproject
+          - oc rollout latest dc/myproject -n myproject
           - oc get -o template route myproject --template={{.spec.host}}

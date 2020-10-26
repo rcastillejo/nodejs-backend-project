@@ -5,14 +5,14 @@
 ## Crear Ambiente
 oc login https://<OPS_INSTANCE>.environments.katacoda.com:443 --token=<OPS_TOKEN>
 oc get project myproject
-
 oc new-project myproject
 oc new-app rcastillejo/techu-project --name myproject
+oc set triggers dc/myproject --from-image=rcastillejo/techu-project:latest -c myproject
 oc expose svc/myproject
 
 ## Configurar pipeline bitbucket - Deploy to Openshift
 oc login https://<OPS_INSTANCE>.environments.katacoda.com:443 -u developer -p developer
 oc project myproject
-oc rollout latest dc/techu-project -n myproject
+oc rollout latest dc/myproject -n myproject
 ### Ver url del backend desplegado
 oc get -o template route myproject --template={{.spec.host}}
