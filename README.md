@@ -1,6 +1,6 @@
 # API REST Practica 2 ADI 
 
-Este API REST está desplegado en un servicio en cloud de Amazon: [API REST Amazon]()
+Este API REST está desplegado en un servicio en cloud de Openshift: [API REST Openshift]
 
 Este API REST esta diseñado para el proyecto final del programa BBVA Tech University.
 
@@ -89,4 +89,4 @@ A parte de los requisitos minimos exigidos para superar la práctica se han impl
 
 - Implementar una Base de Datos persistente, en mi caso con MongoDB, esta base de datos es remota y esta alojada en MLab.
 
-- Desplegar el API en algun servicio en la nube, en nuestro caso he optado por AWS [API REST Amazon](https://thawing-fjord-82104.herokuapp.com)
+- Desplegar el API en algun servicio en la nube, en nuestro caso he optado por Openshift [API REST Openshift]
