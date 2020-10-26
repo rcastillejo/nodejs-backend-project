@@ -25,7 +25,7 @@ function getUsers(request, response) {
           }
         });
       } else {
-        data = { "msg": "No tiene cuentas disponibles" };
+        data = { "msg": "El usuario no existe" };
         response.status(404);
       }
     }

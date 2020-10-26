@@ -8,6 +8,7 @@ pipelines:
      script: 
       - echo "variable ${API_KEY}"
       - npm install
+      - npm test
       - IMAGE_NAME=rcastillejo/techu-project
       - VERSION="0.1.${BITBUCKET_BUILD_NUMBER}"
       - docker login -u $DOCKER_HUB_USER -p $DOCKER_HUB_PASSWORD
