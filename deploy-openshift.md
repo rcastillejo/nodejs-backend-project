@@ -1,9 +1,7 @@
 #Despliegue en openshift
 ## Definir las variables del repositorio
 * OPS_INSTANCE: instancia de conexión al servidor openshift
-* OPS_TOKEN: token de conexion al servidor openshift
 ## Crear Ambiente
-oc login https://<OPS_INSTANCE>.environments.katacoda.com:443 --token=<OPS_TOKEN>
 oc new-project myproject
 oc new-app rcastillejo/techu-project --name myproject
 oc expose svc/myproject
