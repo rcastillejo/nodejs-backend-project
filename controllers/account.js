@@ -114,48 +114,60 @@ function createAccountMovement(request, response) {
 
   client.get(`${config.mlab_collection_account_movements}/${fromAccount}?${config.mlab_key}`,
     function (err, res, body) {
-      client.get(`${config.mlab_collection_account_movements}/${toAccount}?${config.mlab_key}`,
-        function (err, res, body) {
-          
-          let fromAccountBalance = request.body.amount * -1;
-          let fromAccountMovement = {
-            "$inc": {
-              "balance": fromAccountBalance
-            },
-            "$push": {
-              "movements": {
-                "to": toAccount,
-                "amount": fromAccountBalance,
-                "date": movementDate
-              }
-            }
-          };
-          
-          let toAccountBalance = request.body.amount;
-          let toAccountMovement = {              
-            "$inc": {
-              "balance": toAccountBalance
-            },
-            "$push": {
-              "movements": {
-                "from": fromAccount,
-                "amount": toAccountBalance,
-                "date": movementDate
-              }
-            }
-          };
+      let fromAccountBalance = body.balance;
+      if (request.body.amount > fromAccountBalance) {
+        response.status(400).send({ "msg": "La cuenta no tiene suficiente saldo" });
+      } else {
 
-          client.put(`${config.mlab_collection_account_movements}/${fromAccount}?&${config.mlab_key}`, fromAccountMovement,
-            function (err, res, body) {
-              client.put(`${config.mlab_collection_account_movements}/${toAccount}?&${config.mlab_key}`, toAccountMovement,
+        client.get(`${config.mlab_collection_account_movements}/${toAccount}?${config.mlab_key}`,
+          function (err, res, body) {
+            if (res.statusCode === 200) {
+              let toAccountBalance = body.balance;
+
+              let fromAccountBalanceInc = request.body.amount * -1;
+              let fromAccountMovement = {
+                "$inc": {
+                  "balance": fromAccountBalanceInc
+                },
+                "$push": {
+                  "movements": {
+                    "to": toAccount,
+                    "amount": fromAccountBalanceInc,
+                    "date": movementDate
+                  }
+                }
+              };
+
+              let toAccountBalanceInc = request.body.amount;
+              let toAccountMovement = {
+                "$inc": {
+                  "balance": toAccountBalanceInc
+                },
+                "$push": {
+                  "movements": {
+                    "from": fromAccount,
+                    "amount": toAccountBalanceInc,
+                    "date": movementDate
+                  }
+                }
+              };
+
+              client.put(`${config.mlab_collection_account_movements}/${fromAccount}?&${config.mlab_key}`, fromAccountMovement,
                 function (err, res, body) {
-                  response.status(201).send(request.body);
+                  client.put(`${config.mlab_collection_account_movements}/${toAccount}?&${config.mlab_key}`, toAccountMovement,
+                    function (err, res, body) {
+                      response.status(201).send(request.body);
+                    }
+                  );
                 }
               );
-            }
-          );
 
-        });
+            } else {
+              response.status(400).send({ "msg": "La cuenta destino no existe" });
+            }
+          });
+
+      }
     })
 }
 

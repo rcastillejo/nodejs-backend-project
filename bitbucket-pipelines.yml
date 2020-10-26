@@ -22,7 +22,6 @@ pipelines:
       image: openshift/origin-cli
       name: Deploy to Openshift
       script:
-        - VERSION="0.1.${BITBUCKET_BUILD_NUMBER}"
         - oc login "https://${OPS_INSTANCE}.environments.katacoda.com:443" -u developer -p developer
         - oc project myproject
         - oc tag rcastillejo/techu-project myproject:latest

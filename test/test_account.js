@@ -168,6 +168,19 @@ describe('Cuentas & movimientos', () => {
                 })
         })
 
+        it(`Transfiriendo de cuenta1 a cuenta desconocida`, (done) => {
+            chai.request('http://localhost:3000')
+                .post(`/apitechu/v0/accounts/${account1}/movements`)
+                .set({ "Authorization": `Bearer ${token}` })
+                .send({ "to": "cuelaquicuenta", "amount": 1.00 })
+                .end((err, res, body) => {
+                    res.status.should.equal(400);
+                    res.body.should.have.property('msg');
+
+                    res.body.msg.should.equal("La cuenta destino no existe");
+                    done()
+                })
+        })
 
         it(`Transfiriendo de cuenta1 a cuenta2`, (done) => {
             chai.request('http://localhost:3000')
