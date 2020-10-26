@@ -3,7 +3,8 @@ module.exports = {
         "firstname": "test",
         "lastname": "test",
         "email": "test@test.com",
-        "password": "test"
+        "password": "test",
+        "gender": "M",
     },
     alias1: "DEMO1",
     alias2: "DEMO2"

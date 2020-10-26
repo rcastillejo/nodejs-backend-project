@@ -22,6 +22,7 @@ function getUsers(request, response) {
             "lastname": val.last_name,
             "email": val.email,
             "session": val.session,
+            "gender": val.gender,
           }
         });
       } else {
@@ -55,7 +56,8 @@ function saveUser(request, response) {
         "first_name": request.body.firstname,
         "last_name": request.body.lastname,
         "email": request.body.email,
-        "password": request.body.password
+        "password": request.body.password,
+        "gender": request.body.gender
       };
       client.post(`${config.mlab_collection_users}?${config.mlab_key}`, data, function (err, res, body) {
         if (err) {
@@ -66,7 +68,8 @@ function saveUser(request, response) {
             "id": body._id.$oid,
             "firstname": body.first_name,
             "lastname": body.last_name,
-            "email": body.email
+            "email": body.email,
+            "gender": body.gender
           });
         }
       });
@@ -90,7 +93,8 @@ function updateUser(request, response) {
     "$set": {
       "first_name": request.body.firstname,
       "last_name": request.body.lastname,
-      "email": request.body.email
+      "email": request.body.email,
+      "gender": request.body.gender
     }
   };
   client.put(`${config.mlab_collection_users}/${userId}?&${config.mlab_key}`, userToUpdate, function (err, resM, body) {
@@ -98,7 +102,8 @@ function updateUser(request, response) {
       "id": body._id.$oid,
       "firstname": body.first_name,
       "lastname": body.last_name,
-      "email": body.email
+      "email": body.email,
+      "gender": body.gender
     });
   });
 };
@@ -119,7 +124,8 @@ function removeUser(request, response) {
             "id": body._id.$oid,
             "firstname": body.first_name,
             "lastname": body.last_name,
-            "email": body.email
+            "email": body.email,
+            "gender": body.gender
           });
         }
       });

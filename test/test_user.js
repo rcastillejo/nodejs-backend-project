@@ -27,10 +27,12 @@ describe('Agregando un usuario y eliminandolo', () => {
                 res.body.should.have.property('lastname');
                 res.body.should.have.property('email');
                 res.body.should.not.have.property('password');
+                res.body.should.have.property('gender');
 
                 res.body.firstname.should.equal(user.firstname);
                 res.body.lastname.should.equal(user.lastname);
                 res.body.email.should.equal(user.email);
+                res.body.gender.should.equal(user.gender);
 
                 userId = res.body.id;
 
@@ -50,11 +52,13 @@ describe('Agregando un usuario y eliminandolo', () => {
                 res.body[0].should.have.property('lastname');
                 res.body[0].should.have.property('email');
                 res.body[0].should.not.have.property('password');
+                res.body[0].should.have.property('gender');
 
                 res.body[0].id.should.equal(userId);
                 res.body[0].firstname.should.equal(user.firstname);
                 res.body[0].lastname.should.equal(user.lastname);
                 res.body[0].email.should.equal(user.email);
+                res.body[0].gender.should.equal(user.gender);
 
                 done()
             })
@@ -98,11 +102,13 @@ describe('Agregando un usuario y eliminandolo', () => {
                 res.body[0].should.have.property('lastname');
                 res.body[0].should.have.property('email');
                 res.body[0].should.not.have.property('password');
+                res.body[0].should.have.property('gender');
 
                 res.body[0].id.should.equal(userId);
                 res.body[0].firstname.should.equal(user.firstname);
                 res.body[0].lastname.should.equal(user.lastname);
                 res.body[0].email.should.equal(user.email);
+                res.body[0].gender.should.equal(user.gender);
 
                 done()
             })
