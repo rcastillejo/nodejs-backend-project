@@ -1,4 +1,4 @@
-# API REST Practica 2 ADI 
+# API REST TechU 
 
 Este API REST está desplegado en un servicio en cloud de Openshift: [API REST Openshift]
 
